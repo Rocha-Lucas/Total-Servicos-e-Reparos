@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:h="http://xmlns.jcp.org/jsf/html"
+             xmlns:p="http://primefaces.org/ui"
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             xmlns:f="http://xmlns.jcp.org/jsf/core"
+             template="tpPrincipal.xhtml">
+
+    <h:form id="form_Agendamentos">
+        <h3 style="text-align: center; font-family: sans-serif">Formulario de Agendamento de Serviços</h3>
+        <p:fieldset>
+            <p:messages id="messages" showDetail="true" closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <div align="center">
+                <p:panelGrid columns="1" columnClasses="centered/">
+                    <p:outputPanel id="op">
+                        <div class="ui-fluid p-formgrid p-grid">
+
+                            <p:outputLabel for="nome" value="Nome"/>
+                            <div class="p-field">
+                                <p:inputText id="nome" value="#{agendamentoBean.agendamento.nomeCliente}"                          
+                                             maxlength="150"                             
+                                             autocomplete="off"
+                                             required="true"
+                                             size="40"></p:inputText>
+                            </div>
+
+                            <p:outputLabel for="telefone" value="Telefone"/>
+                            <div class="p-field">
+                                <p:inputMask id="telefone" value="#{agendamentoBean.agendamento.telefone}" mask="(99)99999-9999"
+                                             maxlength="14"
+                                             autocomplete="off"
+                                             required="true"
+                                             size="11"></p:inputMask>
+                            </div>
+
+                            <p:outputLabel for="data" value="data"/>
+                            <div class="p-field">
+                                <p:inputMask id="data" value="#{agendamentoBean.agendamento.dataAgendamento}" mask="99/99/9999"
+                                             maxlength="10" 
+                                             autocomplete="off"
+                                             required="true"
+                                             size="8"></p:inputMask>
+                            </div>
+
+                            <p:outputLabel for="horario" value="Horário" />
+                            <div class="p-field">
+                                <p:inputMask id="horario" value="#{agendamentoBean.agendamento.horaAgendamento}" mask="99:99"
+                                             maxlength="5" 
+                                             autocomplete="off"
+                                             size="3"
+                                             required="true"
+                                             ></p:inputMask>
+                            </div>       
+
+
+
+                            <p:outputLabel for="endereco" value="Endereço"/>
+                            <div class="p-field">
+                                <p:inputTextarea id="endereco" value="#{agendamentoBean.agendamento.endereco}" required="true"
+                                                 maxlength="200"/>
+                            </div>
+
+                            <p:outputLabel for="cidade" value="Cidade"/>
+                            <div class="p-field">
+                                <p:inputText id="cidade" type="text" size="15" value="#{agendamentoBean.agendamento.cidade}" required="true"/>
+                            </div>
+
+                            <p:outputLabel for="estado" value="Estado"/>
+                            <div class="p-field">
+                                <p:selectOneMenu id="estado" value="#{agendamentoBean.agendamento.estado}" style="width:150px" required="true">
+                                    <f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{estadosBean.estado.arrayEstado}"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <p:outputLabel for="cep" value="CEP"/>
+                            <div class="p-field">
+                                <p:inputMask id="cep" value="#{agendamentoBean.agendamento.cep}" mask="99.999-999" size="10" required="true"/>
+                            </div>
+
+                            <p:outputLabel for="servicolabel" value="Serviço"/>
+                            <div class="p-field">
+                                <p:selectOneMenu id="servicolabel" value="#{agendamentoBean.agendamento.servico}" style="width:400px" required="true">
+                                    <f:selectItem itemLabel="" itemValue=""/>
+                                    <f:selectItems value="#{servicosBean.servico.arrayServico}"/>
+                                </p:selectOneMenu>
+                            </div>     
+
+                            <p:outputLabel value="Observação" for="observacao"/>
+                            <div class="p-field">
+                                <p:inputTextarea id="observacao" value="#{agendamentoBean.agendamento.observacao}"                            
+                                                 maxlength="200"
+                                                 />
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:commandButton value="Salvar" 
+                                     icon="pi pi-check" 
+                                     action="#{agendamentoBean.inserir()}"
+                                     update="@form" 
+                                     id="btnInserir"
+                                     />
+                    <p:autoUpdate on="#{agendamentoBean.limparFormulario()}"/>    
+                </p:panelGrid>
+            </div>
+        </p:fieldset>
+    </h:form>
+
+</ui:decorate>
+

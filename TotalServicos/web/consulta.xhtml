@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:decorate xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:h="http://xmlns.jcp.org/jsf/html"
+             xmlns:p="http://primefaces.org/ui"
+             xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+             xmlns:f="http://xmlns.jcp.org/jsf/core"
+             template="tpPrincipal.xhtml">
+
+    <h:form id="formConsulta">
+
+        <h3 style="font-family: sans-serif; text-align: center">Consulta de Serviços</h3>
+        <p:fieldset >
+
+
+            <p:messages id="messages" showDetail="true" closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+            
+            <p:dataTable id ="table" value="#{agendamentoBean.listagendamento}" widgetVar="dtagendamento" var="agendamento"
+                         reflow="true" styleClass="products-table" paginator="true"
+                            rows="10" rowSelectMode="add" paginatorPosition="bottom"
+                            filteredValue="#{agendamentoBean.listafiltrada}"
+                            globalFilterFunction="#{agendamentoBean.filtrarDados}"> 
+                
+            <f:facet name="header">
+                <div class="">
+                    <span style="font-weight: bold">Buscar</span>
+                    <span class="filter-container ui-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <p:inputText id="globalFilter" onkeyup="PF('dtagendamento').filter()" placeholder="Nome/Cidade/Estado/Serviço" style="width:255px"/>
+                    </span>
+                </div>
+            </f:facet>
+
+                <p:column headerText="ID" sortBy="#{agendamento.idAgendamento}" style="width: 20px">
+                    <h:outputText value="#{agendamento.idAgendamento}"></h:outputText>
+                </p:column>
+                <p:column headerText="Nome Cliente" sortBy="#{agendamento.nomeCliente}" style="width: 300px">
+                    <h:outputText value="#{agendamento.nomeCliente}"/>
+                </p:column>
+                <p:column  headerText="Telefone" sortBy="#{agendamento.telefone}" style="width: 130px" >
+                    <h:outputText value="#{agendamento.telefone}"/>                
+                </p:column>
+                <p:column headerText="Data" sortBy="#{agendamento.dataAgendamento}" style="width: 90px">
+                    <h:outputText value="#{agendamento.dataAgendamento}"/>
+                </p:column>
+                <p:column headerText="Horario" sortBy="#{agendamento.horaAgendamento}" style="width: 80px">
+                    <h:outputText value="#{agendamento.horaAgendamento}"/>
+                </p:column>
+                <p:column headerText="Endereço" sortBy="#{agendamento.enderecoCompleto}" style="width: 300px">
+                    <h:outputText value="#{agendamento.enderecoCompleto}"/>
+                </p:column>
+                <p:column headerText="Estado" sortBy="#{agendamento.estado}" style="width: 130px">
+                    <h:outputText value="#{agendamento.estado}"/>
+                </p:column>
+                <p:column headerText="Serviço" sortBy="#{agendamento.servico}" style="width: 80px">
+                    <h:outputText value="#{agendamento.servico}"/>
+                </p:column>
+
+                <p:column  headerText="Observacao" sortBy="#{agendamento.observacao}" style="width: 300px">
+                    <h:outputText value="#{agendamento.observacao}"/>              
+                </p:column>
+                <p:autoUpdate on="#{agendamentoBean.listar()}"/>
+
+                <p:column exportable="false">
+                    <p:commandButton icon="pi pi-info" update=":form2:manage-agendamento-info"
+                                     oncomplete="PF('manageAgendamentoDialog').show()"
+                                     styleClass="edit-button rounded-button" process="@this">
+                        <f:setPropertyActionListener value="#{agendamento}" target="#{agendamentoBean.agendamento}"/>
+                        <p:resetInput target=":form2:manage-agendamento-info"/>
+                    </p:commandButton>
+                </p:column>     
+
+                <p:column exportable="false">
+                    <p:commandButton class="rounded-button ui-button-danger" icon="pi pi-trash" process="@this"
+                                     oncomplete="PF('deleteAgendamentoDialog').show()">
+                        <f:setPropertyActionListener value="#{agendamento}" target="#{agendamentoBean.agendamento}"/>
+                    </p:commandButton>
+                </p:column>    
+
+
+            </p:dataTable>
+
+
+            <p:confirmDialog widgetVar="deleteAgendamentoDialog" showEffect="fade" width="300"
+                             message="Deletar o agendamento do cliente: #{agendamentoBean.agendamento.nomeCliente} ?" header="Deletar" severity="warn">
+                <p:commandButton value="Sim" icon="pi pi-check" actionListener="#{agendamentoBean.deletar()}"
+                                 process="@this" action="#{agendamentoBean.listar()}" oncomplete="PF('deleteAgendamentoDialog').hide()"/>
+                <p:commandButton value="Não" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                 onclick="PF('deleteAgendamentoDialog').hide()"/>
+                <p:autoUpdate/>
+            </p:confirmDialog>
+
+
+        </p:fieldset>
+        <div align="right">
+            <p:commandButton id="btnListar"
+                             icon="pi pi-refresh"
+                             value="Atualizar"
+                             styleClass="ui-button-raised ui-button-success"
+                             action="#{agendamentoBean.listar()}"
+
+                             ></p:commandButton>
+        </div>
+    </h:form> 
+
+            
+    <p:dialog header="Detalhes do Agendamento - #{agendamentoBean.agendamento.nomeCliente}" showEffect="fade" modal="true"
+                  widgetVar="manageAgendamentoDialog" responsive="true">
+            <h:form id="form2">
+
+            <p:outputPanel id="manage-agendamento-info" class="ui-fluid">
+                <p:outputPanel rendered="#{not empty agendamentoBean.agendamento}">
+
+                    <div class="p-field">
+                        <p:outputLabel for="nome" value="Nome"></p:outputLabel>
+                        <p:inputText id="nome" value="#{agendamentoBean.agendamento.nomeCliente}" required="true" />
+                    </div>
+
+                    <p:outputLabel for="telefone" value="Telefone"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputMask id="telefone" value="#{agendamentoBean.agendamento.telefone}" mask="(99)99999-9999"
+                                     maxlength="14"
+                                     size="15"
+                                     autocomplete="off"
+                                     required="true"></p:inputMask>
+                    </div>
+
+
+                    <p:outputLabel for="data" value="Data"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputMask id="data" value="#{agendamentoBean.agendamento.dataAgendamento}" mask="99/99/9999"
+                                     maxlength="10"
+                                     size="13"
+                                     autocomplete="off"
+                                     required="true"
+                                     ></p:inputMask>
+                    </div>
+
+                    <p:outputLabel for="horario" value="Horário"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputMask id="horario" value="#{agendamentoBean.agendamento.horaAgendamento}" mask="99:99"
+                                     maxlength="5"
+                                     size="3"
+                                     autocomplete="off"
+                                     required="true"
+                                     ></p:inputMask>
+                    </div>
+
+                    <p:outputLabel for="endereço" value="Endereço"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputTextarea id="endereço" value="#{agendamentoBean.agendamento.endereco}" required="true"
+                                         maxlength="200"/>
+                    </div>
+
+                    <p:outputLabel for="cidade" value="Cidade"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputText id="cidade" type="text" size="15" value="#{agendamentoBean.agendamento.cidade}" required="true"/>
+                    </div>
+
+                    <p:outputLabel for="estado" value="Estado"></p:outputLabel>
+                    <div class="p-field">
+                        <p:selectOneMenu id="estado" value="#{agendamentoBean.agendamento.estado}" style="width:150px" required="true">
+                            <f:selectItems value="#{estadosBean.estado.arrayEstado}"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                    <p:outputLabel for="cep" value="CEP"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputMask id="cep" value="#{agendamentoBean.agendamento.cep}" mask="99.999-999" size="10" required="true"/>
+                    </div>     
+
+                    <p:outputLabel for="servicolabel" value="Servico"/>
+                    <div class="p-field">
+                        <p:selectOneMenu id="servicolabel" value="#{agendamentoBean.agendamento.servico}" 
+                                         required="true">
+                            <f:selectItems value="#{servicosBean.servico.arrayServico}"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                    <p:outputLabel for="observacao" value="Observação"></p:outputLabel>
+                    <div class="p-field">
+                        <p:inputTextarea id="observacao" value="#{agendamentoBean.agendamento.observacao}"                            
+                                         maxlength="200"
+                                         ></p:inputTextarea> 
+                    </div>
+
+
+                </p:outputPanel>
+            </p:outputPanel>
+
+            <div align="left" style="margin-top: 30px">
+                <p:commandButton style="margin-right: 105px" value="Alterar" icon="pi pi-pencil" actionListener="#{agendamentoBean.alterar()}"
+                                 update="manage-agendamento-info" process="manage-agendamento-info @this" action="#{agendamentoBean.listar()}" onclick="PF('manageAgendamentoDialog').hide();"
+                                 />
+                <p:commandButton style="margin-left: 105px" value="Cancelar" icon="pi pi-times" actionListener="#{agendamentoBean.limparFormulario()}" onclick="PF('manageAgendamentoDialog').hide()"
+                                 class="ui-button-secondary"/>
+            </div>
+                
+                </h:form>
+            <p:autoUpdate/>
+        </p:dialog>
+
+
+    
+    
+</ui:decorate>
+
